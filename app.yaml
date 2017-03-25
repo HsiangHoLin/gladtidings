@@ -1,0 +1,43 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+# [START handlers]
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /css
+  static_dir: css
+
+- url: /img
+  static_dir: img
+
+- url: /js
+  static_dir: js
+
+- url: /fonts
+  static_dir: fonts
+
+- url: /bootstrap
+  static_dir: bootstrap
+
+- url: /login/.*
+  script: scripts.main.app
+  login: required
+  secure: always
+
+- url: /.*
+  script: scripts.main.app
+# [END handlers]
+
+# [START libraries]
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+- name: ssl
+  version: latest
+# [END libraries]
