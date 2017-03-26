@@ -61,7 +61,7 @@ def update_pageview(type_name, title, author, date, summary, content, key_id = "
     p.author = author
     p.summary = summary
     p.content = content
-    p.date = datetime.strptime(date, '%Y-%m-%d')
+    p.date = datetime.strptime(date, '%m/%d/%Y')
     p.put()
 
 ##############################################

@@ -153,9 +153,11 @@ class SubmitPage(webapp2.RequestHandler):
         page_id = self.request.get("page_id")
         title = self.request.get('title')
         author = self.request.get('author')
+        date = self.request.get('date')
         summary = self.request.get('summary')
         content = self.request.get('content')
-        models.update_pageview(type_name, title, author, "2017-03-28", summary, content, page_id)
+        models.update_pageview(type_name, title, author, date, summary, content, page_id)
+        self.response.write(date)
 # [END guestbook]
 
 

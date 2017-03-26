@@ -10,6 +10,8 @@
               <div><input type="text" name="title" class="form-control"></div></br>
               <div><label for="author">Author</label></div>
               <div><input type="text" name="author" class="form-control"></div></br>
+              <div><label for="date">Date</label></div>
+              <div><input type="text" name="date" class="datepicker"></div></br>
               <div><label for="summary">Summary</label></div>
               <div><textarea class="editor" name="summary" class="input-block-level" rows="3"></textarea></div></br>
               <div><label for="content">Content</label></div>
@@ -23,5 +25,13 @@
 {% endblock %}
 
 {% block js %}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="/trumbowyg/dist/trumbowyg.min.js"></script>
+    <script>
+        $( function() {
+            $('.editor').trumbowyg();
+            $( ".datepicker" ).datepicker();
+            } );
+    </script>
 {% endblock %}

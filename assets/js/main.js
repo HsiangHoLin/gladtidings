@@ -7,6 +7,5 @@ $(document).ready(function () {
         }, 800, 'easeOutCubic');
     });
 
-    $('.editor').trumbowyg();
 });
 
