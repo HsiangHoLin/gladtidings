@@ -9,6 +9,7 @@ from google.appengine.ext import ndb
 
 import jinja2
 import webapp2
+import models
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.getcwd()),
@@ -18,6 +19,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
+models.set_default_admin('brianhh.lin@gmail.com')
 
 # We set a parent key on the 'Greetings' to ensure that they are all
 # in the same entity group. Queries across the single entity group
@@ -51,6 +53,14 @@ class Greeting(ndb.Model):
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
+
+        admin_info = models.check_self_admin();
+        if admin_info:
+            show_admin = True
+        else:
+            self.response.out.write("oops")
+            return
+
         guestbook_name = self.request.get('guestbook_name',
                                           DEFAULT_GUESTBOOK_NAME)
         greetings_query = Greeting.query(
@@ -97,7 +107,7 @@ class Guestbook(webapp2.RequestHandler):
                     email=users.get_current_user().email())
 
         greeting.content = self.request.get('content')
-        greeting.put()
+        #greeting.put()
 
         query_params = {'guestbook_name': guestbook_name}
         self.redirect('/?' + urllib.urlencode(query_params))
