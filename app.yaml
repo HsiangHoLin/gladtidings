@@ -23,6 +23,9 @@ handlers:
 - url: /bootstrap
   static_dir: bootstrap
 
+- url: /trumbowyg
+  static_dir: trumbowyg
+
 - url: /login/.*
   script: scripts.main.app
   login: required
