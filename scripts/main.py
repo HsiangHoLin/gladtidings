@@ -20,6 +20,14 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
 models.set_default_admin('brianhh.lin@gmail.com')
+models.set_default_admin('test@example.com') # TODO
+
+def is_admin():
+    admin_info = models.check_self_admin();
+    if admin_info:
+        return True
+    else:
+        return False
 
 # We set a parent key on the 'Greetings' to ensure that they are all
 # in the same entity group. Queries across the single entity group
@@ -54,8 +62,7 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self):
 
-        admin_info = models.check_self_admin();
-        if admin_info:
+        if is_admin():
             show_admin = True
         else:
             self.response.out.write("oops")
@@ -113,10 +120,50 @@ class Guestbook(webapp2.RequestHandler):
         self.redirect('/?' + urllib.urlencode(query_params))
 # [END guestbook]
 
+class EditPage(webapp2.RequestHandler):
+
+    def get(self):
+
+        if is_admin():
+            show_admin = True
+        else:
+            self.response.out.write("oops")
+            return
+
+        template_values = {
+            "type_name": "event",
+            "page_id": "",
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('templates/editpage.html')
+        self.response.write(template.render(template_values))
+
+class SubmitPage(webapp2.RequestHandler):
+
+    def post(self):
+        if not is_admin():
+            self.response.out.write("oops")
+            return
+
+        type_name = self.request.get('type_name')
+        if not type_name:
+            self.response.out.write("oops")
+            return
+
+        page_id = self.request.get("page_id")
+        title = self.request.get('title')
+        author = self.request.get('author')
+        summary = self.request.get('summary')
+        content = self.request.get('content')
+        models.update_pageview(type_name, title, author, "2017-03-28", summary, content, page_id)
+# [END guestbook]
+
 
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/sign', Guestbook),
+    ('/login/editpage', EditPage),
+    ('/login/submitpage', SubmitPage),
 ], debug=True)
 # [END app]

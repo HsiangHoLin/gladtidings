@@ -1,6 +1,7 @@
 from google.appengine.api import users
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
+from datetime import datetime
 import logging
 
 NOTFOUND_ID = 0
@@ -8,24 +9,62 @@ MAIN_ID = 1
 SEND_OK = 2
 SEND_FAIL = 3
 
-class Component(ndb.Model):
-    page_id = ndb.IntegerProperty()
-    index = ndb.IntegerProperty()
-    head = ndb.StringProperty()
-    body = ndb.TextProperty()
-    html = ndb.TextProperty()
+##############################################
 
-def delete_component(key_id):
-    c = ndb.Key('Component',int(key_id))
-    if c:
-        c.delete()
+class Admin(ndb.Model):
+    user = ndb.UserProperty(auto_current_user_add=False)
 
-def get_component_query(page_id):
-    try:
-        q = Component.query(Component.page_id == int(page_id)).order(Component.index)
-        return q
-    except:
+def check_self_admin():
+    user = users.get_current_user()
+    if not user:
         return None
+    admin_ent = Admin.get_by_id(user.email())
+    if admin_ent:
+        if not admin_ent.user:
+            admin_ent.user = user
+            admin_ent.put()
+        return admin_ent.user;
+    else:
+        return None;
+
+def set_default_admin(default_email='brianhh.lin@gmail.com'):
+    admin_ent = Admin.get_by_id(default_email)
+    if not admin_ent:
+        admin_ent = Admin(id=default_email)
+        admin_ent.user = None
+        admin_ent.put()
+
+##############################################
+
+class PageView(ndb.Model):
+    title = ndb.StringProperty(indexed=False)
+    author = ndb.StringProperty(indexed=False)
+    date = ndb.DateProperty(auto_now_add=True)
+    summary = ndb.StringProperty(indexed=False)
+    content = ndb.StringProperty(indexed=False)
+
+def pageview_key(type_name):
+    return ndb.Key('PageView', type_name)
+
+def delete_pageview(key_id):
+    e = ndb.Key('PageView', int(key_id))
+    if e:
+        e.delete()
+
+def update_pageview(type_name, title, author, date, summary, content, key_id = ""):
+    p = PageView()
+    if key_id == "":
+        p = PageView(parent=pageview_key(type_name))
+    else:
+        p = PageView.get_by_id(int(key_id))
+    p.title = title
+    p.author = author
+    p.summary = summary
+    p.content = content
+    p.date = datetime.strptime(date, '%Y-%m-%d')
+    p.put()
+
+##############################################
 
 def update_component(key_id, index, head, body, html):
     c = Component.get_by_id(int(key_id))
@@ -137,27 +176,4 @@ def delete_page(key_id):
     for c in cquery.fetch():
         c.key.delete()
 
-##############################################
 
-class Admin(ndb.Model):
-    user = ndb.UserProperty(auto_current_user_add=False)
-
-def check_self_admin():
-    user = users.get_current_user()
-    if not user:
-        return None
-    user_ent = Admin.get_by_id(user.email())
-    if user_ent:
-        if not user_ent.user:
-            user_ent.user = user
-            user_ent.put()
-        return user_ent.user;
-    else:
-        return None;
-
-def set_default_admin(default_email='brianhh.lin@gmail.com'):
-    user_ent = Admin.get_by_id(default_email)
-    if not user_ent:
-        user_ent = Admin(id=default_email)
-        user_ent.user = None
-        user_ent.put()
