@@ -130,9 +130,13 @@ class EditPage(webapp2.RequestHandler):
             self.response.out.write("oops")
             return
 
+        type_name = self.request.get("type_name")
+        page_id = self.request.get("page_id")
+        page = models.get_page(page_id)
+
         template_values = {
-            "type_name": "event",
-            "page_id": "",
+            "type_name": type_name,
+            "page": page,
         }
 
         template = JINJA_ENVIRONMENT.get_template('templates/editpage.html')
@@ -157,15 +161,54 @@ class SubmitPage(webapp2.RequestHandler):
         summary = self.request.get('summary')
         content = self.request.get('content')
         models.update_pageview(type_name, title, author, date, summary, content, page_id)
-        self.response.write(date)
-# [END guestbook]
+        self.redirect('/event')
+
+class DeletePage(webapp2.RequestHandler):
+
+    def post(self):
+        if not is_admin():
+            self.response.out.write("oops")
+            return
+
+        page_id = self.request.get("page_id")
+        models.delete_page(page_id)
+        self.redirect('/event')
+
+class Event(webapp2.RequestHandler):
+
+    def get(self):
+
+        show_admin = is_admin()
+        page_query = models.get_pages('event')
+        template_values = {
+            'show_admin': show_admin,
+            'page_query': page_query
+        }
+        template = JINJA_ENVIRONMENT.get_template('templates/event.html')
+        self.response.write(template.render(template_values))
+
+class OneEvent(webapp2.RequestHandler):
+
+    def get(self):
+
+        show_admin = is_admin()
+        path = self.request.path
+        page_id = path.split('/')[2]
+        page = models.get_page(page_id)
+        template_values = {
+            'show_admin': show_admin,
+            'page': page,
+        }
+        template = JINJA_ENVIRONMENT.get_template('templates/oneevent.html')
+        self.response.write(template.render(template_values))
 
 
 # [START app]
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/sign', Guestbook),
     ('/login/editpage', EditPage),
     ('/login/submitpage', SubmitPage),
+    ('/login/deletepage', DeletePage),
+    ('/event/*', Event),
+    ('/event/[0-9a-zA-Z].*', OneEvent),
 ], debug=True)
 # [END app]

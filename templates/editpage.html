@@ -5,19 +5,35 @@
       <div class="container">
         <div class="row mt mb">
 		  <div class="col-lg-8 col-lg-offset-2">
-              <form action="/login/submitpage?type_name={{ type_name }}&page_id={{ page_id }}" method="post">
+              {% if page %}
+              <form action="/login/submitpage?type_name={{ type_name }}&page_id={{ page.key.id() }}" method="post">
               <div><label for="title">Title</label></div>
-              <div><input type="text" name="title" class="form-control"></div></br>
+              <div><input type="text" name="title" class="form-control" value="{{ page.title }}" ></div></br>
               <div><label for="author">Author</label></div>
-              <div><input type="text" name="author" class="form-control"></div></br>
+              <div><input type="text" name="author" class="form-control" value="{{ page.author }}"></div></br>
               <div><label for="date">Date</label></div>
-              <div><input type="text" name="date" class="datepicker"></div></br>
+              <div><input type="text" name="date" class="datepicker" value="{{ page.date }}"></div></br>
               <div><label for="summary">Summary</label></div>
-              <div><textarea class="editor" name="summary" class="input-block-level" rows="3"></textarea></div></br>
+              <div><textarea class="editor" name="summary" class="input-block-level">{{ page.summary }}</textarea></div></br>
               <div><label for="content">Content</label></div>
-              <div><textarea class="editor" name="content" class="input-block-level" rows="10"></textarea></div></br>
+              <div><textarea class="editor" name="content" class="input-block-level">{{ page.content }}</textarea></div></br>
               <div><input type="submit" class="btn btn-large btn-primary pull-right" value="Post"></div>
-            </form>
+              </form>
+              {% else %}
+              <form action="/login/submitpage?type_name={{ type_name }}&page_id=" method="post">
+              <div><label for="title">Title</label></div>
+              <div><input type="text" name="title" class="form-control" value="" ></div></br>
+              <div><label for="author">Author</label></div>
+              <div><input type="text" name="author" class="form-control" value=""></div></br>
+              <div><label for="date">Date</label></div>
+              <div><input type="text" name="date" class="datepicker" value=""></div></br>
+              <div><label for="summary">Summary</label></div>
+              <div><textarea class="editor" name="summary" class="input-block-level"></textarea></div></br>
+              <div><label for="content">Content</label></div>
+              <div><textarea class="editor" name="content" class="input-block-level"></textarea></div></br>
+              <div><input type="submit" class="btn btn-large btn-primary pull-right" value="Post"></div>
+              </form>
+              {% endif %}
           </div>
         </div><! --/row -->
       </div><! --/container -->

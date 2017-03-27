@@ -33,8 +33,6 @@ handlers:
 
 - url: /.*
   script: scripts.main.app
-  login: required
-  secure: always
 # [END handlers]
 
 # [START libraries]

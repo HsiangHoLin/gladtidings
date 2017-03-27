@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import memcache
 from datetime import datetime
 import logging
+import re
 
 NOTFOUND_ID = 0
 MAIN_ID = 1
@@ -46,23 +47,44 @@ class PageView(ndb.Model):
 def pageview_key(type_name):
     return ndb.Key('PageView', type_name)
 
-def delete_pageview(key_id):
-    e = ndb.Key('PageView', int(key_id))
-    if e:
-        e.delete()
-
-def update_pageview(type_name, title, author, date, summary, content, key_id = ""):
+def update_pageview(type_name, title, author, date, summary, content, page_id = ""):
     p = PageView()
-    if key_id == "":
-        p = PageView(parent=pageview_key(type_name))
+    slug = (type_name + ' ' + title + ' ' + date).lower()
+    slug = re.sub('[^0-9a-zA-Z]+', '-', slug)
+    if page_id == "":
+        p = PageView(parent=pageview_key(type_name), id=slug)
     else:
-        p = PageView.get_by_id(int(key_id))
+        p = PageView.get_by_id(page_id, parent=pageview_key(type_name))
     p.title = title
     p.author = author
     p.summary = summary
     p.content = content
-    p.date = datetime.strptime(date, '%m/%d/%Y')
+    try:
+        p.date = datetime.strptime(date, '%m/%d/%Y')
+    except:
+        p.date = datetime.strptime(date, '%Y-%m-%d')
     p.put()
+
+def get_pages(type_name):
+    try:
+        q = PageView.query(ancestor=pageview_key(type_name)).order(-PageView.date)
+        return q
+    except:
+        return None
+
+def get_page(page_id):
+    type_name = page_id.split('-')[0]
+    try:
+        p = PageView.get_by_id(id=page_id, parent=pageview_key(type_name))
+        return p
+    except:
+        return None
+
+def delete_page(page_id):
+    try:
+        get_page(page_id).key.delete()
+    except:
+        pass
 
 ##############################################
 
@@ -168,12 +190,5 @@ def set_page(group, index, text, slug):
     p.slug = slug
     p.put()
 
-def delete_page(key_id):
-    p = ndb.Key('Page',int(key_id))
-    if p:
-        p.delete()
-    cquery = get_component_query(int(key_id))
-    for c in cquery.fetch():
-        c.key.delete()
 
 
