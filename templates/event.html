@@ -9,20 +9,20 @@
               {% for page in page_query.fetch(limit=100) %}
                 <div class="row">
                   <div class="col-lg-10">
-                    <a href="/event/{{ page.key.id() }}"><h3>{{ page.title }}</h3></a>
-                    <p><i>{{ page.author }} {{ page.date }}</i></p>
-                    <p>{{ page.summary }}</p>
+                    <a href="/event/{{ page.key.id() }}"><h2>{{ page.title }}</h2></a>
+                    <p><i>{{ page.date }} {{ page.author }}</i></p>
+                    <p>{{ page.summary|safe }}</p>
                   </div>
 
                   {% if show_admin %}
                     <div class="col-lg-2">
                       </br>
                       <div><a href="/login/editpage?type_name=event&page_id={{ page.key.id() }}">
-                        <button type="submit" class="btn btn-primary">Edit</button>
+                        <button type="submit" class="btn btn-primary btn-block">Edit</button>
                       </a></div>
                       </br>
                       <div><form class="form" action="/login/deletepage?page_id={{ page.key.id() }}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-block">Delete</button>
                       </form></div>
                     </div>
                   {% endif %}

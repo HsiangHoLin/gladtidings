@@ -133,11 +133,11 @@ a > i:hover {
 	color: #98aaba;
 }
 
-a > i {
-	color: #8fc7eb;
+a > h2 {
+	color: #70b0d0;
 }
 
-a > i:hover {
+a > h2:hover {
 	color: #98aaba;
 }
 

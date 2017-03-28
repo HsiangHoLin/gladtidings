@@ -7,18 +7,18 @@
           {% if page %}
 		    <div class="col-lg-10 col-lg-offset-1">
                 <h2>{{ page.title }}</h2>
-                <p><i>{{ page.author }} {{ page.date }}</i></p>
+                <p><i>{{ page.date }} {{ page.author }}</i></p>
                 {{ page.content|safe }}
             </div>
             {% if show_admin %}
             <div class="col-lg-1">
               </br>
               <a href="/login/editpage?type_name=event&page_id={{ page.key.id() }}">
-                <button type="submit" class="btn btn-primary">Edit</button>
+                <button type="submit" class="btn btn-primary btn-block">Edit</button>
               </a>
-              </br></br>
+              </br>
               <div><form class="form" action="/login/deletepage?page_id={{ page.key.id() }}" method="post">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger btn-block">Delete</button>
               </form></div>
             </div>
             {% endif %}

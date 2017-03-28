@@ -7,8 +7,10 @@
 		  <div class="col-lg-8 col-lg-offset-2">
               {% if page %}
               <form action="/login/submitpage?type_name={{ type_name }}&page_id={{ page.key.id() }}" method="post">
-              <div><label for="title">Title</label></div>
-              <div><input type="text" name="title" class="form-control" value="{{ page.title }}" ></div></br>
+              <div><label for="english_title">English Title (Required)</label></div>
+              <div><input type="text" name="english_title" class="form-control" value="{{ page.english_title }}" readonly></div></br>
+              <div><label for="title">Title (Required)</label></div>
+              <div><input type="text" name="title" class="form-control" value="{{ page.title }}" required="true"></div></br>
               <div><label for="author">Author</label></div>
               <div><input type="text" name="author" class="form-control" value="{{ page.author }}"></div></br>
               <div><label for="date">Date</label></div>
@@ -21,8 +23,10 @@
               </form>
               {% else %}
               <form action="/login/submitpage?type_name={{ type_name }}&page_id=" method="post">
+              <div><label for="english_title">English Title (Required)</label></div>
+              <div><input type="text" name="english_title" class="form-control" value="" required="true"></div></br>
               <div><label for="title">Title</label></div>
-              <div><input type="text" name="title" class="form-control" value="" ></div></br>
+              <div><input type="text" name="title" class="form-control" value="" required="true"></div></br>
               <div><label for="author">Author</label></div>
               <div><input type="text" name="author" class="form-control" value=""></div></br>
               <div><label for="date">Date</label></div>

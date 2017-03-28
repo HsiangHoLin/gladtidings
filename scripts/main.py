@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# [START imports]
 import os
 import urllib
 
@@ -15,9 +14,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.getcwd()),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
-# [END imports]
-
-DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
 models.set_default_admin('brianhh.lin@gmail.com')
 models.set_default_admin('test@example.com') # TODO
@@ -29,96 +25,10 @@ def is_admin():
     else:
         return False
 
-# We set a parent key on the 'Greetings' to ensure that they are all
-# in the same entity group. Queries across the single entity group
-# will be consistent. However, the write rate should be limited to
-# ~1/second.
-
-def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
-    """Constructs a Datastore key for a Guestbook entity.
-
-    We use guestbook_name as the key.
-    """
-    return ndb.Key('Guestbook', guestbook_name)
-
-
-# [START greeting]
-class Author(ndb.Model):
-    """Sub model for representing an author."""
-    identity = ndb.StringProperty(indexed=False)
-    email = ndb.StringProperty(indexed=False)
-
-
-class Greeting(ndb.Model):
-    """A main model for representing an individual Guestbook entry."""
-    author = ndb.StructuredProperty(Author)
-    content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
-# [END greeting]
-
-
-# [START main_page]
-class MainPage(webapp2.RequestHandler):
-
-    def get(self):
-
-        if is_admin():
-            show_admin = True
-        else:
-            self.response.out.write("oops")
-            return
-
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greetings_query = Greeting.query(
-            ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-        greetings = greetings_query.fetch(10)
-
-        user = users.get_current_user()
-        if user:
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-        else:
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
-
-        template_values = {
-            'user': user,
-            'greetings': greetings,
-            'guestbook_name': urllib.quote_plus(guestbook_name),
-            'url': url,
-            'url_linktext': url_linktext,
-        }
-
-        template = JINJA_ENVIRONMENT.get_template('templates/index.html')
-        self.response.write(template.render(template_values))
-# [END main_page]
-
-
-# [START guestbook]
-class Guestbook(webapp2.RequestHandler):
-
-    def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each
-        # Greeting is in the same entity group. Queries across the
-        # single entity group will be consistent. However, the write
-        # rate to a single entity group should be limited to
-        # ~1/second.
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greeting = Greeting(parent=guestbook_key(guestbook_name))
-
-        if users.get_current_user():
-            greeting.author = Author(
-                    identity=users.get_current_user().user_id(),
-                    email=users.get_current_user().email())
-
-        greeting.content = self.request.get('content')
-        #greeting.put()
-
-        query_params = {'guestbook_name': guestbook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
-# [END guestbook]
+def handle_404(webapp):
+    template = JINJA_ENVIRONMENT.get_template('static/404.html')
+    webapp.response.out.write(template.render())
+    webapp.response.set_status(404)
 
 class EditPage(webapp2.RequestHandler):
 
@@ -127,7 +37,7 @@ class EditPage(webapp2.RequestHandler):
         if is_admin():
             show_admin = True
         else:
-            self.response.out.write("oops")
+            handle_404(self)
             return
 
         type_name = self.request.get("type_name")
@@ -147,20 +57,23 @@ class SubmitPage(webapp2.RequestHandler):
     def post(self):
         if not is_admin():
             self.response.out.write("oops")
+            self.response.set_status(404)
             return
 
         type_name = self.request.get('type_name')
         if not type_name:
             self.response.out.write("oops")
+            self.response.set_status(404)
             return
 
         page_id = self.request.get("page_id")
+        english_title = self.request.get('english_title')
         title = self.request.get('title')
         author = self.request.get('author')
         date = self.request.get('date')
         summary = self.request.get('summary')
         content = self.request.get('content')
-        models.update_pageview(type_name, title, author, date, summary, content, page_id)
+        models.update_pageview(type_name, english_title, title, author, date, summary, content, page_id)
         self.redirect('/event')
 
 class DeletePage(webapp2.RequestHandler):
@@ -168,6 +81,7 @@ class DeletePage(webapp2.RequestHandler):
     def post(self):
         if not is_admin():
             self.response.out.write("oops")
+            self.response.set_status(404)
             return
 
         page_id = self.request.get("page_id")
@@ -202,6 +116,24 @@ class OneEvent(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('templates/oneevent.html')
         self.response.write(template.render(template_values))
 
+class Default(webapp2.RequestHandler):
+
+    def get(self):
+        seg = self.request.path.strip("/").split('/')
+        if len(seg) != 1:
+            self.response.out.write("oops")
+            self.response.set_status(404)
+            return
+
+        try:
+            if seg[0] == '':
+                seg[0] = 'index'
+            template = JINJA_ENVIRONMENT.get_template('static/%s.html' % seg[0])
+            self.response.out.write(template.render())
+        except:
+            handle_404(self)
+            return
+
 
 # [START app]
 app = webapp2.WSGIApplication([
@@ -210,5 +142,6 @@ app = webapp2.WSGIApplication([
     ('/login/deletepage', DeletePage),
     ('/event/*', Event),
     ('/event/[0-9a-zA-Z].*', OneEvent),
+    ('/.*', Default),
 ], debug=True)
 # [END app]
