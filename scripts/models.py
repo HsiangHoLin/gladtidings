@@ -67,12 +67,23 @@ def update_pageview(type_name, english_title, title, author, date, summary, cont
         p.date = datetime.strptime(date, '%Y-%m-%d')
     p.put()
 
-def get_pages(type_name):
+def get_pages_init(type_name, num):
     try:
-        q = PageView.query(ancestor=pageview_key(type_name)).order(-PageView.date)
-        return q
+        return PageView.query(ancestor=pageview_key(type_name)).order(-PageView.date).fetch_page(num)
     except:
-        return None
+        return None, None, None
+
+def get_pages_next(type_name, cursor, num):
+    try:
+        return PageView.query(ancestor=pageview_key(type_name)).order(-PageView.date).fetch_page(num, start_cursor=cursor)
+    except:
+        return None, None, None
+
+def get_pages_prev(type_name, cursor, num):
+    try:
+        return PageView.query(ancestor=pageview_key(type_name)).order(PageView.date).fetch_page(num, start_cursor=cursor)
+    except:
+        return None, None, None
 
 def get_page(page_id):
     type_name = page_id.split('-')[0]

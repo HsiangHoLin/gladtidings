@@ -5,8 +5,8 @@
       <div class="container">
         <div class="row mt mb">
 		  <div class="col-lg-10 col-lg-offset-1">
-            {% if page_query %}
-              {% for page in page_query.fetch(limit=100) %}
+            {% if pages %}
+              {% for page in pages %}
                 <div class="row">
                   <div class="col-lg-10">
                     <a href="/event/{{ page.key.id() }}"><h2>{{ page.title }}</h2></a>
@@ -26,10 +26,14 @@
                       </form></div>
                     </div>
                   {% endif %}
-
                 </div>
               {% endfor %}
-              </div>
+            {% endif %}
+            {% if has_prev %}
+              <a href="/events?prev_cursor={{ prev_cursor }}">Previous</a>
+            {% endif %}
+            {% if has_next %}
+              <a href="/events?next_cursor={{ next_cursor }}">Next</a>
             {% endif %}
           </div>
         </div><! --/row -->
