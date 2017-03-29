@@ -27,7 +27,7 @@ def is_admin():
         return False
 
 def handle_404(webapp):
-    template = JINJA_ENVIRONMENT.get_template('static/404.html')
+    template = JINJA_ENVIRONMENT.get_template('public/404.html')
     webapp.response.out.write(template.render())
     webapp.response.set_status(404)
 
@@ -91,12 +91,14 @@ class DeletePage(webapp2.RequestHandler):
 
 class Events(webapp2.RequestHandler):
 
+    type_name = 'event'
+
     def get(self):
 
         def cursor_pagination(prev_cursor_str, next_cursor_str):
             PAGE_SIZE = 3
             if not prev_cursor_str and not next_cursor_str:
-                p, next_cursor, more = models.get_pages_init('event', PAGE_SIZE)
+                p, next_cursor, more = models.get_pages_init(self.type_name, PAGE_SIZE)
                 prev_cursor_str = ''
                 if next_cursor:
                     next_cursor_str = next_cursor.urlsafe()
@@ -106,14 +108,14 @@ class Events(webapp2.RequestHandler):
                 prev_ = False
             elif next_cursor_str:
                 cursor = Cursor(urlsafe=next_cursor_str)
-                p, next_cursor, more = models.get_pages_next('event', cursor, PAGE_SIZE)
+                p, next_cursor, more = models.get_pages_next(self.type_name, cursor, PAGE_SIZE)
                 prev_cursor_str = next_cursor_str
                 next_cursor_str = next_cursor.urlsafe()
                 prev_ = True
                 next_ = True if more else False
             elif prev_cursor_str:
                 cursor = Cursor(urlsafe=prev_cursor_str)
-                p, next_cursor, more = models.get_pages_prev('event', cursor, PAGE_SIZE)
+                p, next_cursor, more = models.get_pages_prev(self.type_name, cursor, PAGE_SIZE)
                 p.reverse()
                 next_cursor_str = prev_cursor_str
                 prev_cursor_str = next_cursor.urlsafe()
@@ -125,26 +127,13 @@ class Events(webapp2.RequestHandler):
                     prev_, \
                     next_
 
-        #cursor = Cursor(urlsafe=self.request.get('cursor'))
-        #show_admin = is_admin()
-        #page_query = models.get_pages('event')
-        #page_query.fetch(
-        #itr = page_query.iter(produce_cursors=True, start_cursor=cursor, batch_size=BATCH_SIZE)
-        #template_values = {
-        #    'show_admin': show_admin,
-        #    'page_query': page_query
-        #    'prev_cursor': try_prev(itr)
-        #    'next_cursor': try_next(itr)
-        #}
-        #template = JINJA_ENVIRONMENT.get_template('templates/events.html')
-        #self.response.write(template.render(template_values))
-
         show_admin = is_admin()
         prev_cursor = self.request.get('prev_cursor', '')
         next_cursor = self.request.get('next_cursor', '')
         p, prev_cursor_str, next_cursor_str, prev_, next_ = cursor_pagination(prev_cursor, next_cursor)
 
         template_values = {
+            'type_name': self.type_name,
             'show_admin': show_admin,
             'pages': p,
             'has_prev' : prev_,
@@ -170,6 +159,16 @@ class OneEvent(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('templates/oneevent.html')
         self.response.write(template.render(template_values))
 
+class Homepage(webapp2.RequestHandler):
+
+    def get(self):
+        p, next_cursor, more = models.get_pages_init('event', 3)
+        template_values = {
+            'pages': p
+        }
+        template = JINJA_ENVIRONMENT.get_template('templates/index.html')
+        self.response.write(template.render(template_values))
+
 class Default(webapp2.RequestHandler):
 
     def get(self):
@@ -180,9 +179,7 @@ class Default(webapp2.RequestHandler):
             return
 
         try:
-            if seg[0] == '':
-                seg[0] = 'index'
-            template = JINJA_ENVIRONMENT.get_template('static/%s.html' % seg[0])
+            template = JINJA_ENVIRONMENT.get_template('public/%s.html' % seg[0])
             self.response.out.write(template.render())
         except:
             handle_404(self)
@@ -191,6 +188,7 @@ class Default(webapp2.RequestHandler):
 
 # [START app]
 app = webapp2.WSGIApplication([
+    ('//*', Homepage),
     ('/login/editpage', EditPage),
     ('/login/submitpage', SubmitPage),
     ('/login/deletepage', DeletePage),
