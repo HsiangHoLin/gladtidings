@@ -17,7 +17,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 models.set_default_admin('brianhh.lin@gmail.com')
-models.set_default_admin('test@example.com') # TODO
 
 def is_admin():
     admin_info = models.check_self_admin();
