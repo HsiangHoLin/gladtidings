@@ -1,0 +1,61 @@
+{% extends "templates/base.html" %}
+
+{% block content %}
+    <div class="whiteback">
+      <div class="container">
+        <div class="row mt mb">
+		  <div class="col-lg-10 col-lg-offset-1">
+            {% if show_admin %}
+              <div class="centered"><a href="/login/editpage?type_name={{ type_name }}">
+              <button type="submit" class="btn btn-primary btn-block">New Article</button>
+              </a></div>
+              </br>
+            {% endif %}
+            {% if pages %}
+              {% for page in pages %}
+                <div class="row">
+                  <div class="col-lg-10">
+                    <a href="/{{ type_name }}/{{ page.key.id() }}"><h2>{{ page.title }}</h2></a>
+                    <p><i>{{ page.date }} {{ page.author }}</i></p>
+                    <p>{{ page.summary|safe }}</p>
+                  </div>
+
+                  {% if show_admin %}
+                    <div class="col-lg-2">
+                      </br>
+                      <div><a href="/login/editpage?type_name={{ type_name }}&page_id={{ page.key.id() }}">
+                        <button type="submit" class="btn btn-primary btn-block">Edit</button>
+                      </a></div>
+                      </br>
+                      <div><form class="form" action="/login/deletepage?page_id={{ page.key.id() }}" method="post">
+                        <button type="submit" class="btn btn-danger btn-block">Delete</button>
+                      </form></div>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% endif %}
+            {% if has_prev %}
+              <a href="/{{ type_name }}s?prev_cursor={{ prev_cursor }}">Previous</a>
+            {% endif %}
+            {% if has_next %}
+              <a href="/{{ type_name }}s?next_cursor={{ next_cursor }}">Next</a>
+            {% endif %}
+          </div>
+        </div><! --/row -->
+      </div><! --/container -->
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/trumbowyg/dist/trumbowyg.min.js"></script>
+    <script>
+        $( function() {
+            $('.editor').trumbowyg();
+            $( ".datepicker" ).datepicker();
+            } );
+    </script>
+{% endblock %}

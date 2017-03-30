@@ -57,14 +57,12 @@ class SubmitPage(webapp2.RequestHandler):
 
     def post(self):
         if not is_admin():
-            self.response.out.write("oops")
-            self.response.set_status(404)
+            handle_404(self)
             return
 
         type_name = self.request.get('type_name')
         if not type_name:
-            self.response.out.write("oops")
-            self.response.set_status(404)
+            handle_404(self)
             return
 
         page_id = self.request.get("page_id")
@@ -75,23 +73,23 @@ class SubmitPage(webapp2.RequestHandler):
         summary = self.request.get('summary')
         content = self.request.get('content')
         models.update_pageview(type_name, english_title, title, author, date, summary, content, page_id)
-        self.redirect('/events')
+        self.redirect('/'+type_name+'s')
 
 class DeletePage(webapp2.RequestHandler):
 
     def post(self):
         if not is_admin():
-            self.response.out.write("oops")
-            self.response.set_status(404)
+            handle_404(self)
             return
 
         page_id = self.request.get("page_id")
         models.delete_page(page_id)
         self.redirect('/events')
 
-class Events(webapp2.RequestHandler):
+class Pages(webapp2.RequestHandler):
 
-    type_name = 'event'
+    type_name = ''
+    template_file = ''
 
     def get(self):
 
@@ -141,10 +139,23 @@ class Events(webapp2.RequestHandler):
             'prev_cursor': prev_cursor_str,
             'next_cursor': next_cursor_str,
         }
-        template = JINJA_ENVIRONMENT.get_template('templates/events.html')
+        template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
 
-class OneEvent(webapp2.RequestHandler):
+class Events(Pages):
+
+    type_name = 'event'
+    template_file = 'templates/events.html'
+
+class Articles(Pages):
+
+    type_name = 'article'
+    template_file = 'templates/articles.html'
+
+class OnePage(webapp2.RequestHandler):
+
+    type_name = ''
+    template_file = ''
 
     def get(self):
 
@@ -154,17 +165,30 @@ class OneEvent(webapp2.RequestHandler):
         page = models.get_page(page_id)
         template_values = {
             'show_admin': show_admin,
+            'type_name': self.type_name,
             'page': page,
         }
-        template = JINJA_ENVIRONMENT.get_template('templates/oneevent.html')
+        template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
+
+class OneEvent(OnePage):
+
+    type_name = 'event'
+    template_file = 'templates/oneevent.html'
+
+class OneArticle(OnePage):
+
+    type_name = 'article'
+    template_file = 'templates/onearticle.html'
 
 class Homepage(webapp2.RequestHandler):
 
     def get(self):
-        p, next_cursor, more = models.get_pages_init('event', 3)
+        events, _, _ = models.get_pages_init('event', 3)
+        articles, _, _ = models.get_pages_init('article', 3)
         template_values = {
-            'pages': p
+            'events': events,
+            'articles': articles,
         }
         template = JINJA_ENVIRONMENT.get_template('templates/index.html')
         self.response.write(template.render(template_values))
@@ -174,8 +198,7 @@ class Default(webapp2.RequestHandler):
     def get(self):
         seg = self.request.path.strip("/").split('/')
         if len(seg) != 1:
-            self.response.out.write("oops")
-            self.response.set_status(404)
+            handle_404(self)
             return
 
         try:
@@ -194,6 +217,8 @@ app = webapp2.WSGIApplication([
     ('/login/deletepage', DeletePage),
     ('/events/*', Events),
     ('/event/[0-9a-zA-Z].*', OneEvent),
+    ('/articles/*', Articles),
+    ('/article/[0-9a-zA-Z].*', OneArticle),
     ('/.*', Default),
 ], debug=True)
 # [END app]

@@ -17,26 +17,45 @@
 <div class="whiteback">
   <div id="about" class="container">
     <div class="row mt mb">
+
       <div class="col-md-6">
+
         <h2 class="centered">近期活動</h2>
         <div class="row mt mb">
           <div class="col-md-1"></div>
           <div class="col-md-10">
-            {% if pages %}
-              {% for page in pages %}
-                <a href="/event/{{ page.key.id() }}"><h2>{{ page.title }}</h2></a>
-                <p>{{ page.summary|safe }}</p>
+            {% if events %}
+              {% for event in events %}
+                <a class="centered" href="/event/{{ event.key.id() }}"><h2>{{ event.title }}</h2></a>
+                <p class="centered">{{ event.summary|safe }}</p>
               {% endfor %}
             {% endif %}
           </div>
           <div class="col-md-1"></div>
-          </div>
         </div>
-      <div class="col-md-6">
+
       </div>
-    </div><!--/row -->
-  </div><!--/container -->
-</div><!--whiteback-->
+      <div class="col-md-6">
+
+        <h2 class="centered">最新文章</h2>
+        <div class="row mt mb">
+          <div class="col-md-1"></div>
+          <div class="col-md-10">
+            {% if articles %}
+              {% for article in articles %}
+                <a class="centered" href="/article/{{ article.key.id() }}"><h2>{{ article.title }}</h2></a>
+                <p class="centered">{{ article.summary|safe }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="col-md-1"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 
