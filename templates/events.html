@@ -2,6 +2,8 @@
 
 {% block content %}
     <div class="whiteback">
+    </br>
+    </br>
       <div class="container">
         <div class="row mt mb">
 		  <div class="col-lg-10 col-lg-offset-1">
@@ -14,21 +16,22 @@
             {% if pages %}
               {% for page in pages %}
                 <div class="row">
+                  <div class="col-lg-1"></div>
                   <div class="col-lg-10">
                     <a href="/{{ type_name }}/{{ page.key.id() }}"><h2>{{ page.title }}</h2></a>
                     <p><i>{{ page.date }} {{ page.author }}</i></p>
                     <p>{{ page.summary|safe }}</p>
+                    <hr>
                   </div>
-
                   {% if show_admin %}
-                    <div class="col-lg-2">
+                    <div class="col-lg-1">
                       </br>
                       <div><a href="/login/editpage?type_name={{ type_name }}&page_id={{ page.key.id() }}">
                         <button type="submit" class="btn btn-primary btn-block">Edit</button>
                       </a></div>
                       </br>
                       <div><form class="form" action="/login/deletepage?page_id={{ page.key.id() }}" method="post">
-                        <button type="submit" class="btn btn-danger btn-block">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-block">Del</button>
                       </form></div>
                     </div>
                   {% endif %}
@@ -36,10 +39,10 @@
               {% endfor %}
             {% endif %}
             {% if has_prev %}
-              <a href="/{{ type_name }}s?prev_cursor={{ prev_cursor }}">Previous</a>
+            <a class="pull-left" href="/{{ type_name }}s?prev_cursor={{ prev_cursor }}"><i class="fa fa-chevron-circle-left fa-3x" aria-hidden="true"></i></a>
             {% endif %}
             {% if has_next %}
-              <a href="/{{ type_name }}s?next_cursor={{ next_cursor }}">Next</a>
+            <a class="pull-right" href="/{{ type_name }}s?next_cursor={{ next_cursor }}"><i class="fa fa-chevron-circle-right fa-3x" aria-hidden="true"></i></a>
             {% endif %}
           </div>
         </div><! --/row -->

@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<div id="headerwrap">
+<div id="headerwrap" class="myback">
   <div class="container">
     <div class="row">
       <div class="col-lg-6 col-lg-offset-3">
-	    <h4>Some text here</h4>
+	    <h4>中宣會</h4>
 	    <h1>佳音團契</h1>
-		<h4>Some text here</h4>
+		<h4>Gladtidings Fellowship</h4>
 	  </div>
     </div>
   </div>
@@ -28,6 +28,7 @@
               {% for event in events %}
                 <a class="centered" href="/event/{{ event.key.id() }}"><h2>{{ event.title }}</h2></a>
                 <p class="centered">{{ event.summary|safe }}</p>
+                <hr>
               {% endfor %}
             {% endif %}
           </div>
@@ -45,6 +46,7 @@
               {% for article in articles %}
                 <a class="centered" href="/article/{{ article.key.id() }}"><h2>{{ article.title }}</h2></a>
                 <p class="centered">{{ article.summary|safe }}</p>
+                <hr>
               {% endfor %}
             {% endif %}
           </div>

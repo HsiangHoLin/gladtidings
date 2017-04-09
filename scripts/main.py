@@ -47,6 +47,8 @@ class EditPage(webapp2.RequestHandler):
         template_values = {
             "type_name": type_name,
             "page": page,
+            'user_email': models.get_user_email(),
+            'is_member_or_admin': is_admin(),
         }
 
         template = JINJA_ENVIRONMENT.get_template('templates/editpage.html')
@@ -74,6 +76,11 @@ class SubmitPage(webapp2.RequestHandler):
         models.update_pageview(type_name, english_title, title, author, date, summary, content, page_id)
         self.redirect('/'+type_name+'s')
 
+class Login(webapp2.RequestHandler):
+
+    def get(self):
+        self.redirect('/')
+
 class DeletePage(webapp2.RequestHandler):
 
     def post(self):
@@ -93,7 +100,7 @@ class Pages(webapp2.RequestHandler):
     def get(self):
 
         def cursor_pagination(prev_cursor_str, next_cursor_str):
-            PAGE_SIZE = 3
+            PAGE_SIZE = 20
             if not prev_cursor_str and not next_cursor_str:
                 p, next_cursor, more = models.get_pages_init(self.type_name, PAGE_SIZE)
                 prev_cursor_str = ''
@@ -137,6 +144,8 @@ class Pages(webapp2.RequestHandler):
             'has_next' : next_,
             'prev_cursor': prev_cursor_str,
             'next_cursor': next_cursor_str,
+            'user_email': models.get_user_email(),
+            'is_member_or_admin': is_admin(),
         }
         template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
@@ -166,6 +175,8 @@ class OnePage(webapp2.RequestHandler):
             'show_admin': show_admin,
             'type_name': self.type_name,
             'page': page,
+            'user_email': models.get_user_email(),
+            'is_member_or_admin': is_admin(),
         }
         template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
@@ -183,11 +194,14 @@ class OneArticle(OnePage):
 class Homepage(webapp2.RequestHandler):
 
     def get(self):
-        events, _, _ = models.get_pages_init('event', 3)
-        articles, _, _ = models.get_pages_init('article', 3)
+        PAGE_SIZE = 3
+        events, _, _ = models.get_pages_init('event', PAGE_SIZE)
+        articles, _, _ = models.get_pages_init('article', PAGE_SIZE)
         template_values = {
             'events': events,
             'articles': articles,
+            'user_email': models.get_user_email(),
+            'is_member_or_admin': is_admin(),
         }
         template = JINJA_ENVIRONMENT.get_template('templates/index.html')
         self.response.write(template.render(template_values))
@@ -201,19 +215,37 @@ class Default(webapp2.RequestHandler):
             return
 
         try:
+            template_values = {
+                'user_email': models.get_user_email(),
+                'is_member_or_admin': is_admin(),
+            }
             template = JINJA_ENVIRONMENT.get_template('public/%s.html' % seg[0])
-            self.response.out.write(template.render())
+            self.response.out.write(template.render(template_values))
         except:
             handle_404(self)
             return
 
+class Manage(webapp2.RequestHandler):
+
+    def get(self):
+        template_values = {
+            'is_admin': is_admin(),
+            'admins': models.get_admins(),
+            'members': models.get_members(),
+            'user_email': models.get_user_email(),
+            'is_member_or_admin': is_admin(),
+        }
+        template = JINJA_ENVIRONMENT.get_template('templates/manage.html')
+        self.response.write(template.render(template_values))
 
 # [START app]
 app = webapp2.WSGIApplication([
     ('//*', Homepage),
+    ('/login', Login),
     ('/login/editpage', EditPage),
     ('/login/submitpage', SubmitPage),
     ('/login/deletepage', DeletePage),
+    ('/login/manage', Manage),
     ('/events/*', Events),
     ('/event/[0-9a-zA-Z].*', OneEvent),
     ('/articles/*', Articles),

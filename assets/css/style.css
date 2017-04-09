@@ -6,8 +6,8 @@
  * Version: 1.0
  * Date: 04-20-2014
  * URL: 
+ * See colors https://material.io/guidelines/style/color.html#color-color-palette
  */
-
 
 /* ==========================================================================
    Base Styles, Bootstrap Modifications & Fonts Import
@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar-default .navbar-brand {
-	color: #8fc7eb;
+	color: #401A4D;
 }
 
 .navbar-default .navbar-brand:hover {
@@ -95,18 +95,18 @@ h1, h2, h3, h4, h5, h6 {
 .navbar-default {
 	/*background-color: transparent;
 	border-color: transparent;*/
-	background-color: #2f2f2f;
-	border-color: #2f2f2f;
+	background-color: #F5F5F5;
+	border-color: #F5F5F5;
 }
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-	color: #8fc7eb;
+	color: #ffffff;
 	background-color: transparent;
 	border-bottom: 2px solid #8fc7eb
 }
 
 .navbar-default .navbar-nav > li > a {
-	color: #8fc7eb;
+	color: #401A4D;
 }
 
 .navbar-default .navbar-nav > li > a:hover {
@@ -126,7 +126,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a > i {
-	color: #8fc7eb;
+	color: #401A4D;
 }
 
 a > i:hover {
@@ -134,7 +134,7 @@ a > i:hover {
 }
 
 a > h2 {
-	color: #70b0d0;
+	color: #401A4D;
 }
 
 a > h2:hover {
@@ -172,7 +172,8 @@ p > a:hover {
 	margin-top: -70px;
 	padding-top: 250px;
 	text-align:center;
-	background-attachment: relative;
+	/*background-attachment: relative;*/
+    background-attachment: fixed;
 	background-position: center center;
     background-repeat: no-repeat;
 	min-height: 650px;
@@ -205,7 +206,7 @@ p > a:hover {
 }
 
 .grayback {
-    background-color: #f2f2f2;
+    background-color: #EDE7F6;
 }
 
 .whiteback {
@@ -230,7 +231,7 @@ p > a:hover {
 #footerwrap {
 	padding-top: 70px;
 	padding-bottom: 50px;
-	background-color: #2f2f2f;
+	background-color: #401A4D;
 }
 
 #footerwrap p {
@@ -298,8 +299,9 @@ p > a:hover {
     background-size: cover;
 }
 
-
-
+iframe, object, embed {
+    max-width: 100%;
+}
 
 /* Gallery */
 .gallery {
@@ -308,4 +310,18 @@ p > a:hover {
 
 .gallery img:hover {
 	opacity: 0.4;
+}
+
+.mypadding {
+    padding: 60px;
+}
+
+#custom-quote-back-about {
+	background-image: url(/assets/img/about.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    margin-top: 50px;
+    color: #2f2f2f;
 }

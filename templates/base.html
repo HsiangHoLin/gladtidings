@@ -52,6 +52,11 @@
             <li><a href="/articles">最新文章</a></li>
             <li><a href="/resource">教會資源</a></li>
             <li><a href="/contact">聯絡我們</a></li>
+            {% if is_member_or_admin %}
+            <li><a href="/login/manage">{{ user_email }}</a></li>
+            {% else %}
+            <li><a href="/login">登入</a></li>
+            {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>

@@ -6,9 +6,25 @@ import logging
 import re
 
 ##############################################
+class Member(ndb.Model):
+    user = ndb.UserProperty(auto_current_user_add=False)
+
+def get_members():
+    return Member.query().fetch();
+
+##############################################
 
 class Admin(ndb.Model):
     user = ndb.UserProperty(auto_current_user_add=False)
+
+def get_admins():
+    return Admin.query().fetch();
+
+def get_user_email():
+    user = users.get_current_user()
+    if not user:
+        return None
+    return user.email()
 
 def check_self_admin():
     user = users.get_current_user()
