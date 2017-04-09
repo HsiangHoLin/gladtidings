@@ -49,6 +49,7 @@ class EditPage(webapp2.RequestHandler):
             "page": page,
             'user_email': models.get_user_email(),
             'is_member_or_admin': is_admin(),
+            'logout': users.create_logout_url('/'),
         }
 
         template = JINJA_ENVIRONMENT.get_template('templates/editpage.html')
@@ -146,6 +147,7 @@ class Pages(webapp2.RequestHandler):
             'next_cursor': next_cursor_str,
             'user_email': models.get_user_email(),
             'is_member_or_admin': is_admin(),
+            'logout': users.create_logout_url('/'),
         }
         template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
@@ -177,6 +179,7 @@ class OnePage(webapp2.RequestHandler):
             'page': page,
             'user_email': models.get_user_email(),
             'is_member_or_admin': is_admin(),
+            'logout': users.create_logout_url('/'),
         }
         template = JINJA_ENVIRONMENT.get_template(self.template_file)
         self.response.write(template.render(template_values))
@@ -202,6 +205,7 @@ class Homepage(webapp2.RequestHandler):
             'articles': articles,
             'user_email': models.get_user_email(),
             'is_member_or_admin': is_admin(),
+            'logout': users.create_logout_url('/'),
         }
         template = JINJA_ENVIRONMENT.get_template('templates/index.html')
         self.response.write(template.render(template_values))
@@ -218,6 +222,7 @@ class Default(webapp2.RequestHandler):
             template_values = {
                 'user_email': models.get_user_email(),
                 'is_member_or_admin': is_admin(),
+                'logout': users.create_logout_url('/'),
             }
             template = JINJA_ENVIRONMENT.get_template('public/%s.html' % seg[0])
             self.response.out.write(template.render(template_values))
@@ -234,6 +239,7 @@ class Manage(webapp2.RequestHandler):
             'members': models.get_members(),
             'user_email': models.get_user_email(),
             'is_member_or_admin': is_admin(),
+            'logout': users.create_logout_url('/'),
         }
         template = JINJA_ENVIRONMENT.get_template('templates/manage.html')
         self.response.write(template.render(template_values))
