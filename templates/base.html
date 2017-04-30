@@ -53,7 +53,7 @@
             <li><a href="/resource">教會資源</a></li>
             <li><a href="/contact">聯絡我們</a></li>
             {% if is_member_or_admin %}
-            <li><a href="{{ logout }}">{{ user_email }} Logout</a></li>
+            <li><a href="{{ logout }}">Logout</a></li>
             {% elif user_email %}
             <li><a href="{{ logout }}">Non-member Logout</a></li>
             {% else %}

@@ -91,7 +91,8 @@ class DeletePage(webapp2.RequestHandler):
 
         page_id = self.request.get("page_id")
         models.delete_page(page_id)
-        self.redirect('/events')
+        type_name = self.request.get('type_name')
+        self.redirect('/' + type_name + 's')
 
 class Pages(webapp2.RequestHandler):
 
