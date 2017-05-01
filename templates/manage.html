@@ -9,7 +9,7 @@
         {% if is_admin %}
         <form action="/login/managesubmit?type=admin&action=add" method="post">
         <div><label for="email">Add email</label></div>
-        <div><input type="text" name="email" class="form-control"></div></br>
+        <div><input type="email" name="email" class="form-control"></div></br>
         <div><input type="submit" class="btn btn-large btn-primary pull-right" value="Add"></div>
         </form>
         {% endif %}
@@ -38,7 +38,7 @@
         {% if is_admin %}
         <form action="/login/managesubmit?type=member&action=add" method="post">
         <div><label for="email">Add email</label></div>
-        <div><input type="text" name="email" class="form-control"></div></br>
+        <div><input type="email" name="email" class="form-control"></div></br>
         <div><input type="submit" class="btn btn-large btn-primary pull-right" value="Add"></div>
         </form>
         {% endif %}

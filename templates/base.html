@@ -49,15 +49,15 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/about">關於我們</a></li>
             <li><a href="/events">近期活動</a></li>
-            <li><a href="/articles">最新文章</a></li>
-            <li><a href="/resource">教會資源</a></li>
+            <!--li><a href="/articles">最新文章</a></li-->
+            <!--li><a href="/resource">教會資源</a></li-->
             <li><a href="/contact">聯絡我們</a></li>
+            {% if is_admin %}
+            <li><a href="/login/manage">管理帳號</a></li>
+            {% endif %}
             {% if is_member_or_admin %}
-            <li><a href="{{ logout }}">Logout</a></li>
-            {% elif user_email %}
-            <li><a href="{{ logout }}">Non-member Logout</a></li>
-            {% else %}
-            <li><a href="/login">登入</a></li>
+            <li><a href="/prayers">團契代禱</a></li>
+            <li><a href="{{ logout }}">{{user_email}} 登出</a></li>
             {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
@@ -70,13 +70,14 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-sm-4">
-					<p>abc<i class="fa fa-at"></i> example.com</p>
+					<p>電話/TEL 212-219-1472</p>
 				</div>
 				<div class="col-sm-4">
-                    <p>Address:</p>
+                    <p>紐約中華海外宣道會 美國紐約市喜士達街一五四號</p>
+                    <p>Oversea Chinese Mission 154 Hester Street New York, NY 10013</p>
 				</div>
 				<div class="col-sm-4">
-					<p>&copy; example.com <script type="text/javascript">document.write(new Date().   getFullYear());</script></p>
+					<p>&copy; ocmgt.org <script type="text/javascript">document.write(new Date().   getFullYear());</script></p>
 				</div>
 			</div>
 		</div>

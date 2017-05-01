@@ -12,6 +12,28 @@ class Member(ndb.Model):
 def get_members():
     return Member.query().fetch();
 
+def add_member(email):
+    mem_ent = Member.get_by_id(email)
+    if not mem_ent:
+        mem_ent = Member(id=email)
+        mem_ent.user = None
+        mem_ent.put()
+
+def del_member(email):
+    mem_ent = Member.get_by_id(email)
+    if mem_ent:
+        mem_ent.key.delete()
+
+def is_member():
+    user = users.get_current_user()
+    if not user:
+        return False
+    ent = Member.get_by_id(user.email())
+    if ent:
+        return True
+    return False
+
+
 ##############################################
 
 class Admin(ndb.Model):
@@ -39,12 +61,17 @@ def check_self_admin():
     else:
         return None;
 
-def set_default_admin(default_email='brianhh.lin@gmail.com'):
-    admin_ent = Admin.get_by_id(default_email)
+def add_admin(email):
+    admin_ent = Admin.get_by_id(email)
     if not admin_ent:
-        admin_ent = Admin(id=default_email)
+        admin_ent = Admin(id=email)
         admin_ent.user = None
         admin_ent.put()
+
+def del_admin(email):
+    admin_ent = Admin.get_by_id(email)
+    if admin_ent:
+        admin_ent.key.delete()
 
 ##############################################
 

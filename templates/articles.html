@@ -7,7 +7,7 @@
       <div class="container">
         <div class="row mt mb">
 		  <div class="col-lg-10 col-lg-offset-1">
-            {% if show_admin %}
+            {% if is_admin %}
               <div class="centered"><a href="/login/editpage?type_name={{ type_name }}">
               <button type="submit" class="btn btn-primary btn-block">New Article</button>
               </a></div>
@@ -24,7 +24,7 @@
                     <a class="pull-right" href="/{{ type_name }}/{{ page.key.id() }}"><p>閱讀全文</p></a>
                     <hr>
                   </div>
-                  {% if show_admin %}
+                  {% if is_admin %}
                     <div class="col-lg-1">
                       </br>
                       <div><a href="/login/editpage?type_name={{ type_name }}&page_id={{ page.key.id() }}">

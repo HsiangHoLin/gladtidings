@@ -8,7 +8,7 @@
       <div class="col-lg-6 col-lg-offset-3">
 	    <h3>中宣會</h3>
 	    <h1>佳音團契</h1>
-		<h3>Gladtidings Fellowship</h3>
+		<h3>OCM Gladtidings Fellowship</h3>
 	  </div>
     </div>
   </div>
@@ -29,7 +29,7 @@
   <div id="about" class="container">
     <div class="row mt mb">
 
-      <div class="col-md-6">
+      <div class="col-md-6 col-md-offset-3">
 
         <h2 class="centered">近期活動</h2>
         <div class="row mt mb">
@@ -39,24 +39,6 @@
               {% for event in events %}
                 <a class="centered" href="/event/{{ event.key.id() }}"><h2>{{ event.title }}</h2></a>
                 <p class="centered">{{ event.summary|safe }}</p>
-                <hr>
-              {% endfor %}
-            {% endif %}
-          </div>
-          <div class="col-md-1"></div>
-        </div>
-
-      </div>
-      <div class="col-md-6">
-
-        <h2 class="centered">最新文章</h2>
-        <div class="row mt mb">
-          <div class="col-md-1"></div>
-          <div class="col-md-10">
-            {% if articles %}
-              {% for article in articles %}
-                <a class="centered" href="/article/{{ article.key.id() }}"><h2>{{ article.title }}</h2></a>
-                <p class="centered">{{ article.summary|safe }}</p>
                 <hr>
               {% endfor %}
             {% endif %}
