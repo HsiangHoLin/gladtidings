@@ -168,7 +168,7 @@ p > a:hover {
    ========================================================================== */
 
 #headerwrap {
-	background: url(/assets/img/home.jpg) no-repeat center top;
+	background: url(/assets/img/home2.jpg) no-repeat center top;
 	margin-top: -70px;
 	padding-top: 250px;
 	text-align:center;
@@ -176,10 +176,10 @@ p > a:hover {
     background-attachment: fixed;
 	background-position: center center;
     background-repeat: no-repeat;
-	min-height: 650px;
-    height: 100%;
+	min-height: 700px;
+    height: 110%;
 	width: 100%;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
 	
     -webkit-background-size: 100%;
     -moz-background-size: 100%;
@@ -193,7 +193,7 @@ p > a:hover {
 }
 
 #headerwrap h1 {
-	color:#ffffff;
+	color:#000000;
 	padding-top: 10px;
 	padding-bottom: 20px;
 	letter-spacing: 4px;
@@ -203,7 +203,7 @@ p > a:hover {
 
 #headerwrap h3 {
 	font-weight: 400;
-	color: #ffffff
+	color: #000000;
 }
 
 .grayback {
@@ -325,4 +325,10 @@ iframe, object, embed {
     background-attachment: fixed;
     margin-top: 50px;
     color: #2f2f2f;
+}
+
+.transblack {
+    background-color:white;
+    z-index:0;
+    opacity:0.5;
 }

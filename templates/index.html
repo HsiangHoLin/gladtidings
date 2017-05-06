@@ -5,7 +5,7 @@
 <div id="headerwrap" class="myback">
   <div class="container">
     <div class="row">
-      <div class="col-lg-6 col-lg-offset-3">
+      <div class="col-lg-6 col-lg-offset-3 transblack">
 	    <h3>中宣會</h3>
 	    <h1>佳音團契</h1>
 		<h3>OCM Gladtidings Fellowship</h3>
@@ -37,8 +37,8 @@
           <div class="col-md-10">
             {% if events %}
               {% for event in events %}
-                <a class="centered" href="/event/{{ event.key.id() }}"><h2>{{ event.title }}</h2></a>
-                <p class="centered">{{ event.summary|safe }}</p>
+                <h2>{{ event.title }}</h2>
+                <p class="centered">{{ event.content|safe }}</p>
                 <hr>
               {% endfor %}
             {% endif %}

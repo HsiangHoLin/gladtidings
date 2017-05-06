@@ -274,7 +274,7 @@ class ManageSubmit(webapp2.RequestHandler):
 # [START app]
 app = webapp2.WSGIApplication([
     ('//*', Homepage),
-    ('/login', Login),
+    ('/login/*', Login),
     ('/login/editpage', EditPage),
     ('/login/submitpage', SubmitPage),
     ('/login/deletepage', DeletePage),
